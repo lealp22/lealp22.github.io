@@ -1,6 +1,7 @@
 ﻿body {
     margin: 0 auto;
     padding: 1em;
+    text-align: center;
 }
 h1, h2, h3, a {
     color: #336699;
@@ -21,17 +22,22 @@ nav li {
     font-size: 1.5em;
     text-transform: uppercase;
 }
+.clase1 {
+    border: 0.1em solid #336699;   
+    box-sizing: border-box;    
+}
 section {
     padding: 1em;
-    width: 70%;
-    float: left;
+    width: 60%;
+    float: right;
     box-sizing: border-box;
+    
 }
 aside {
-    background-color: #FFC0A2;
-    border: 0.1em solid #336699;
+    background-color: #336699;
+    border: 0.1em solid #FFFFFF;
     padding: 1em;
-    width: 30%;
+    width: 40%;
     float: right;
     box-sizing: border-box;
 }
