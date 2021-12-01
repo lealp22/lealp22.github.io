@@ -1,41 +1,436 @@
 <!DOCTYPE html>
-<html>
-    
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deferred Transfers</title>
+  </head>
+  <style>
+    body {
+      font-size: 15px;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS',
+        sans-serif;
+    }
+
+    input {
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      display: block;
+      text-align: center;
+    }
+
+    .head {
+      display: flex;
+      direction: row;
+    }
+
+    .head p {
+      margin: 0;
+    }
+
+    .head-card {
+      border: solid 1px black;
+      padding: 0.5rem;
+    }
+
+    .w-20 {
+      width: 20%;
+    }
+
+    .w-30 {
+      width: 30%;
+    }
+
+    .w-50 {
+      width: 50%;
+    }
+
+    .less-size {
+      font-size: 0.8rem;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+    }
+
+    .centered {
+      text-align: center;
+    }
+
+    .btn,
+    .btn-auto {
+      margin: 0.8rem;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS',
+        sans-serif;
+      font-size: 1.2rem;
+      padding: 14px 28px;
+      border-radius: 12px;
+      box-shadow: 0.1rem 0.1rem 0.1rem 0 #000;
+      cursor: pointer;
+      font-size: 1rem;
+      transition-duration: 0.3s;
+      background-color: #4caf50;
+      color: #fff;
+    }
+
+    .btn-auto {
+      margin: auto;
+    }
+
+    .btn:hover {
+      background-color: #3e8e41;
+    }
+
+    .btn:active {
+      background-color: #3e8e41;
+      transform: scale(0.9);
+    }
+
+    .d-inline-flex {
+      display: inline-flex;
+    }
+
+    .participant {
+      margin-bottom: 2px;
+    }
+
+    .accordion {
+      background-color: #eee;
+      color: #444;
+      cursor: pointer;
+      padding: 18px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 15px;
+      transition: 0.4s;
+    }
+
+    .active,
+    .accordion:hover {
+      background-color: #ccc;
+    }
+
+    .panel {
+      padding: 0 18px;
+      background-color: white;
+      /*max-height: 0;*/
+      overflow: hidden;
+      transition: max-height 0.2s ease-out;
+    }
+
+    .withdrawal p {
+      display: inline-flex;
+    }
+
+    input.invalid {
+      border-color: red;
+    }
+
+    input.valid {
+      border-color: inherit;
+    }
+
+    .d-none {
+      display: none;
+    }
+
+    .query {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .query-labl {
+      font-weight: bold;
+      min-width: 30%;
+      margin: 0.5rem 0;
+    }
+
+    .query-fld {
+      min-width: 60%;
+      margin: 0.5rem 0;
+    }
+  </style>
+  <body>
     <head>
-        <meta charset="utf-8" />
-        <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="style.css" />
-        <title>Página personal de Jesús Leal</title>
-    </head>    
-    
-<body>
+      <div class="title">
+        <h1>Deferred and Partial Transfers</h1>
+      </div>
+      <div class="head">
+        <div class="head-card w-30 centered">
+          <p>Address:&nbsp;</p>
+          <p id="address">0x0000000000000000000000000000000000000000</p>
+        </div>
+        <div class="head-card w-50">
+          <p>Message:&nbsp;</p>
+          <p class="less-size" id="status"></p>
+        </div>
+        <div class="head-card w-20 d-inline-flex">
+          <button class="btn-auto" id="btn-connect">Connect your wallet</button>
+        </div>
+      </div>
+    </head>
 
-
-    <h1>Máster en Blockchain, Smart Contracts y Criptoeconomía</h1>
-    <h3><div class="contact-btn"><a href="https://www.masterethereum.com/" target="_blank">MAS INFORMACIÓN</a></div></h3>
-    <br>
     <div>
-         <section>
-            <p>Hola! Soy Jesús y he creado está página Web</p> <p>como prueba para la asignatura de</p>
-            <p>TECNOLOGÍAS DE INTERNET</p>
-            <br>
-            <br>
-            <p>I'm hosted with GitHub Pages.</p>            
-        </section>
+      <button class="accordion">Create Deferred Transfers Request</button>
+      <div class="panel">
+        <p class="hint">
+          <b>Hint:</b>
+          Create a request to send automatically partial transfers of the Ethers
+          deposited in this application. The amount will be divided into the
+          number of partial transfers.
+        </p>
+        <div id="form1">
+          <label for="amount">Amount</label>
+          <input type="number" name="amount" required />
+          <label for="months">Months to start:</label>
+          <input type="number" name="months" id="months" required />
+          <label for="transfers">Number of partial transfers:</label>
+          <input type="number" name="transfers" id="transfers" required />
+          <label for="transfers">
+            Participants (at least two and up to a maximum of 10):
+          </label>
+          <input
+            type="text"
+            class="participant"
+            name="part1"
+            placeholder="e.g. 0x0000000000000000000000000000000000000000"
+            size="42"
+            maxlength="42"
+            pattern="^0x[a-fA-F0-9]{40}"
+            required
+          />
+          <input
+            type="text"
+            class="participant"
+            name="part2"
+            placeholder="e.g. 0x0000000000000000000000000000000000000000"
+            size="42"
+            maxlength="42"
+            pattern="^0x[a-fA-F0-9]{40}"
+            required
+          />
+          <input
+            type="text"
+            class="participant"
+            name="part3"
+            placeholder="e.g. 0x0000000000000000000000000000000000000000"
+            size="42"
+            maxlength="42"
+            pattern="^0x[a-fA-F0-9]{40}"
+          />
+          <input
+            type="text"
+            class="participant"
+            name="part4"
+            placeholder="e.g. 0x0000000000000000000000000000000000000000"
+            size="42"
+            maxlength="42"
+            pattern="^0x[a-fA-F0-9]{40}"
+          />
+          <input
+            type="text"
+            class="participant"
+            name="part5"
+            placeholder="e.g. 0x0000000000000000000000000000000000000000"
+            size="42"
+            maxlength="42"
+            pattern="^0x[a-fA-F0-9]{40}"
+          />
+          <input
+            type="text"
+            class="participant"
+            name="part6"
+            placeholder="e.g. 0x0000000000000000000000000000000000000000"
+            size="42"
+            maxlength="42"
+            pattern="^0x[a-fA-F0-9]{40}"
+          />
+          <input
+            type="text"
+            class="participant"
+            name="part7"
+            placeholder="e.g. 0x0000000000000000000000000000000000000000"
+            size="42"
+            maxlength="42"
+            pattern="^0x[a-fA-F0-9]{40}"
+          />
+          <input
+            type="text"
+            class="participant"
+            name="part8"
+            placeholder="e.g. 0x0000000000000000000000000000000000000000"
+            size="42"
+            maxlength="42"
+            pattern="^0x[a-fA-F0-9]{40}"
+          />
+          <input
+            type="text"
+            class="participant"
+            name="part9"
+            placeholder="e.g. 0x0000000000000000000000000000000000000000"
+            size="42"
+            maxlength="42"
+            pattern="^0x[a-fA-F0-9]{40}"
+          />
+          <input
+            type="text"
+            class="participant-last"
+            name="part10"
+            placeholder="e.g. 0x0000000000000000000000000000000000000000"
+            size="42"
+            maxlength="42"
+            pattern="^0x[a-fA-F0-9]{40}"
+          />
+          <label for="beneficiary">
+            Beneficiary address (address to which the Ethers will be sent to):
+          </label>
+          <input
+            type="text"
+            name="beneficiary"
+            id="beneficiary"
+            placeholder="e.g. 0x0000000000000000000000000000000000000000"
+            size="42"
+            maxlength="42"
+            pattern="^0x[a-fA-F0-9]{40}"
+            required
+          />
+          <button class="btn" onclick="App.createRequest()">Send</button>
+        </div>
+      </div>
+    </div>
 
-        <aside>
-            <img src="img/jesus.jpg"  height="240" width="240">
-        </aside>
+    <div>
+      <button class="accordion">Request Details</button>
+      <div class="panel">
+        <div>
+          <label for="request">Request ID:</label>
+          <input id="reqId1" type="input" name="request" required />
+          <button class="btn" onclick="App.requestDetails()">Send</button>
+        </div>
+        <div class="query d-none" id="query-1">
+          <p class="query-labl">Amount:</p>
+          <p class="query-fld" id="query-11"></p>
+          <p class="query-labl">Start after block:</p>
+          <p class="query-fld" id="query-12"></p>
+          <p class="query-labl">Number of partial transfers:</p>
+          <p class="query-fld" id="query-14"></p>
+          <p class="query-labl">Number of Participants:</p>
+          <p class="query-fld" id="query-15"></p>
+          <p class="query-labl">Participants:</p>
+          <p class="query-fld" id="query-16"></p>
+          <p class="query-labl">Beneficiary:</p>
+          <p class="query-fld" id="query-17"></p>
+          <p class="query-labl">Status:</p>
+          <p class="query-fld" id="query-18"></p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button class="accordion">Approve Request (Only participants)</button>
+      <div class="panel">
+
+          <label for="request">Request ID:</label>
+          <input id="reqId2" type="input" name="request" required />
+          <button class="btn" onclick="App.approveParticipation()">Send</button>
+
+      </div>
+    </div>
+
+    <div>
+      <button class="accordion">
+        Cancel Deferred Transfers Request (Only requesters. If not yet approved by all
+        participants)
+      </button>
+      <div class="panel">
         
-    </div>        
-    
-    <footer class="clase1">
-        <ul>
-            <li><a href="http://github.com/lealp22" target="_blank"><img src="img/github.png" alt="GitHub"/></a></li>
-            <li><a href="https://www.linkedin.com/in/jesusleal/" target="_blank"><img src="img/linkedin.png" alt="LinkedIn"/></a></li>
-            <li><a href="mailto:lealp22@yahoo.com" target="_blank"><img src="img/mail.png" alt="Mail"/></a></li>
-        </ul>
-    </footer>
+          <label for="request">Request ID:</label>
+          <input id="reqId3" type="input" name="request" required />
+          <button class="btn" onclick="App.cancelRequest()">Send</button>
+
+      </div>
+    </div>
+
+    <div>
+      <button class="accordion">Withdrawal</button>
+      <div class="panel withdrawal">
+        <p>Amount pending to withdrawal:</p>
+        <p id="withdrawal_amount">0.00</p>
+        <p>Eth</p>
+      </div>
+      <button class="btn" onclick="App.withdraw()">Withdrawal</button>
+    </div>
+
+    <div>
+      <button class="accordion">
+        Create Cancel Proposal (Only requesters. If the request has been approved by all
+        participants)
+      </button>
+      <p class="hint">
+        <b>Hint:</b>
+        The proposal must be approved by at least 51% of the participants.
+      </p>
+      <div class="panel">
         
-</body>
+          <label for="request">Request ID:</label>
+          <input id="reqId4" type="input" name="request" required />
+          <button class="btn" onclick="App.createCancelProposalRequestApproved()">Send</button>
+        
+      </div>
+    </div>
+
+    <div>
+      <button class="accordion">Proposal Details</button>
+      <div class="panel">
+        <div>
+          <label for="request">Proposal ID:</label>
+          <input id="propId" type="input" name="request" required />
+          <button class="btn" onclick="App.proposalDetails()">Send</button>
+        </div>
+        <div class="query d-none" id="query-2">
+          <p class="query-labl">Request ID:</p>
+          <p class="query-fld" id="query-21"></p>
+          <p class="query-labl">Number of Participants:</p>
+          <p class="query-fld" id="query-22"></p>
+          <p class="query-labl">Number of Acceptances:</p>
+          <p class="query-fld" id="query-23"></p>
+          <p class="query-labl">Participants:</p>
+          <p class="query-fld" id="query-24"></p>
+          <p class="query-labl">Status:</p>
+          <p class="query-fld" id="query-25"></p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button class="accordion">
+        Approve Cancel Proposal (Only participants)
+      </button>
+      <div class="panel">
+          <label for="proposal">Proposal ID:</label>
+          <input type="input" name="proposal" id="proposal" required />
+          <button class="btn" onclick="App.approveCancelProposal()">Send</button>
+      </div>
+    </div>
+
+    <div>
+      <button class="accordion">Run Check Proccess</button>
+      <p class="hint">
+        <b>Hint:</b>
+        The sender will receive a 10% fee on all transfers made.
+      </p>
+      <div class="panel">
+        <button class="btn" onclick="App.processAutomation()">Run</button>
+      </div>
+    </div>
+
+    <script src="index.js"></script>
+  </body>
 </html>
